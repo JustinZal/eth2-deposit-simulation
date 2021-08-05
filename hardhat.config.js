@@ -5,7 +5,7 @@
 const API_KEY = process.env.ALCHEMY_API_KEY;
 
 module.exports = {
-  solidity: "0.7.3",
+  solidity: "0.6.11",
   networks: {
     hardhat: {
       forking: {
