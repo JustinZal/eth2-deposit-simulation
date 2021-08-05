@@ -6,7 +6,7 @@ const blsKeygen =  require("@chainsafe/bls-keygen");
 const DEPOSIT_ADDRESS = '0x00000000219ab540356cbb839cbe05303d7705fa';
 const TRANSFER_AMOUNT = ethers.utils.parseUnits('32', 'ether');
 const DEPOSIT_AMOUNT = ethers.utils.parseUnits('32', 'gwei');
-const DEPOSIT_AMOUNT_LE_HEX = '0x0040597307000000';
+const DEPOSIT_AMOUNT_LE_HEX = '0x0040597307000000'; //THIS is how value is hashed inside the contract
 const PROVIDER_URL = 'http://127.0.0.1:8545';
 
 const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL);
@@ -65,13 +65,14 @@ const simulate = async () => {
     const signature = signDepositObject(signingKey, withdrawalCredentials);
     const root = computeDepositDataRoot(signingKey.publicKey, signature, withdrawalCredentials)
 
-    await depositContract.connect(sender).deposit(
+    const transaction = await depositContract.connect(sender).deposit(
         signingKey.publicKey,
         withdrawalCredentials,
         signature,
         root,
         { value: TRANSFER_AMOUNT }
-    )
+    );
+    await transaction.wait();
 };
 
 simulate();
