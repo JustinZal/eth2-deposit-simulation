@@ -2,7 +2,7 @@ const ethers = require('ethers');
 const abi = require('./lib/deposit.json');
 const bls = require("@chainsafe/bls");
 const blsKeygen =  require("@chainsafe/bls-keygen");
-const {Bytes} = require("ethers");
+const { buildMessageRoot } = require('./lib/ssz.js');
 
 const DEPOSIT_ADDRESS = '0x00000000219ab540356cbb839cbe05303d7705fa';
 const TRANSFER_AMOUNT = ethers.utils.parseUnits('32', 'ether');
@@ -39,13 +39,26 @@ const signDepositObject = (keys, withdrawalCredentials) => {
 const simulate = async () => {
     await bls.init()
     const sender = await provider.getSigner();
-    // const depositContract = new ethers.Contract(DEPOSIT_ADDRESS, abi, provider);
+    const depositContract = new ethers.Contract(DEPOSIT_ADDRESS, abi, provider);
 
     const signingKey = generateValidatorKeys();
     const withdrawalKey = generateValidatorKeys();
 
     const withdrawalCredentials = getWithdrawalCredentials(withdrawalKey);
     const signature = signDepositObject(signingKey, withdrawalCredentials);
+    const messageRoot = buildMessageRoot({
+        pubkey: signingKey.publicKey,
+        withdrawal_credentials: withdrawalCredentials.substring(2),
+        amount: DEPOSIT_AMOUNT
+    });
+
+    await depositContract.connect(sender).deposit(
+        signingKey.publicKey,
+        withdrawalCredentials,
+        signature,
+        messageRoot,
+        { value: TRANSFER_AMOUNT }
+    );
 };
 
 simulate()
