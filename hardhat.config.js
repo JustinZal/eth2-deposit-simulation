@@ -10,6 +10,7 @@ module.exports = {
     hardhat: {
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${API_KEY}`,
+        blockNumber: 12964790
       }
     }
   }

@@ -2,7 +2,8 @@
   "name": "eth2-data-verification",
   "version": "0.1.0",
   "dependencies": {
-    "@chainsafe/bls": "^4.0.0",
+    "@chainsafe/bls": "^6.0.1",
+    "@chainsafe/blst": "^0.2.0",
     "@chainsafe/ssz": "^0.6.13",
     "abi-decoder": "^2.3.0",
     "ethers": "^5.4.4"
@@ -11,6 +12,7 @@
     "start": "npx hardhat node"
   },
   "devDependencies": {
+    "@chainsafe/bls-keygen": "^0.2.1",
     "hardhat": "^2.5.0",
     "node-sass": "^4.14.1"
   }
